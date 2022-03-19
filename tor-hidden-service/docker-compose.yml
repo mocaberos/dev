@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  onion:
+    container_name: onion
+    build:
+      context: ./onion
+    volumes:
+      - './onion/torrc:/etc/tor/torrc'
+      - 'sockets:/var/run'
+    ports:
+      - '80:80'
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+    volumes:
+      - './nginx/config/:/etc/nginx/'
+      - 'sockets:/var/run'
+  app:
+    container_name: app
+    build:
+      context: ./app
+    environment:
+      PUMA_SOCK_PATH: '/var/run/puma.sock'
+    volumes:
+      - './app:/app'
+      - 'sockets:/var/run'
+volumes:
+  sockets:
+
